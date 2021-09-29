@@ -1,4 +1,6 @@
 import statistics
+import time
+
 import pulp
 import numpy as np
 from matplotlib import pyplot as plt
@@ -8,8 +10,8 @@ import Points
 CHPoints = []
 
 def findUpper(points):
-    if len(points) < 3:
-        return
+    #if len(points) < 3:
+        #return
     #sort the points
     points.sort(key=lambda x: x[0])
     print(points)
@@ -28,6 +30,8 @@ def findUpper(points):
     for p in points:
         if p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
             linepoints.append(p)
+    if len(linepoints) < 2:
+        return
     #add the points on the line to the set of CH points
     CHPoints.extend(linepoints)
     #prune points between endpoints and call recursively on left and right points
@@ -62,6 +66,8 @@ def findLower(points):
     for p in points:
         if p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
             linepoints.append(p)
+    if len(linepoints) < 2:
+        return
     #add the points on the line to the set of CH points
     CHPoints.extend(linepoints)
     #prune points between endpoints and call recursively on left and right points
