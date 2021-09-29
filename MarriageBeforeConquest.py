@@ -10,11 +10,8 @@ import Points
 CHPoints = []
 
 def findUpper(points):
-    #if len(points) < 3:
-        #return
     #sort the points
     points.sort(key=lambda x: x[0])
-    print(points)
     #find the median and partition
     median = points[round(len(points)/2)][0]
     #solve lp to find bridge
@@ -28,7 +25,7 @@ def findUpper(points):
     linepoints = []
     #find out which points are on the line (might be more than two)
     for p in points:
-        if p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
+        if pulp.value(a) is not None and p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
             linepoints.append(p)
     if len(linepoints) < 2:
         return
@@ -46,11 +43,8 @@ def findUpper(points):
     findUpper(right)
 
 def findLower(points):
-    if len(points) < 3:
-        return
     #sort the points
     points.sort(key=lambda x: x[0])
-    print(points)
     #find the median and partition
     median = points[round(len(points)/2)][0]
     #solve lp to find bridge
@@ -64,7 +58,7 @@ def findLower(points):
     linepoints = []
     #find out which points are on the line (might be more than two)
     for p in points:
-        if p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
+        if pulp.value(a) is not None and p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
             linepoints.append(p)
     if len(linepoints) < 2:
         return
@@ -81,7 +75,7 @@ def findLower(points):
     findLower(left)
     findLower(right)
 
-testpoints = Points.square(50)
+testpoints = Points.square(20)
 findUpper(testpoints)
 findLower(testpoints)
 
