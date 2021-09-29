@@ -8,17 +8,13 @@ import Points
 CHPoints = []
 
 def findHull(points):
+    if len(points) < 3:
+        return
     #sort the points
     points.sort(key=lambda x: x[0])
+    print(points)
     #find the median and partition
     median = points[round(len(points)/2)][0]
-    left = []
-    right = []
-    for p in points:
-        if p[0] < median:
-            left.append((p[0], p[1]))
-        else:
-            right.append((p[0], p[1]))
     #solve lp to find bridge
     prob = pulp.LpProblem("bridge_lp", pulp.LpMinimize)
     a = pulp.LpVariable("a")
@@ -27,40 +23,34 @@ def findHull(points):
     for p in points:
         prob += p[1] <= a*p[0] + b
     prob.solve()
-    endpoints = []
+    linepoints = []
     #find out which points are on the line (might be more than two)
     for p in points:
         if p[1] == round(pulp.value(a)*p[0] + pulp.value(b)):
-            endpoints.append(p)
-    print(endpoints)
-    CHPoints.append(endpoints[0])
-    CHPoints.append(endpoints[len(endpoints)-1])
-    endpoints.sort(key=lambda x: x[0])
-    #remove points between the endpoints
-    for p in points:
-        if endpoints[0][0] < p[0] < endpoints[len(endpoints) - 1][0]:
-            points.remove(p)
+            linepoints.append(p)
+    #add the points on the line to the set of CH points
+    CHPoints.extend(linepoints)
+    #prune points between endpoints and call recursively on left and right points
     left = []
     right = []
     for p in points:
-        if p[0] < endpoints[0][0]:
+        if not(linepoints[0][0] < p[0]):
             left.append(p)
-        elif p[0] > endpoints[len(endpoints)-1][0]:
+        elif not(p[0] < linepoints[-1][0]):
             right.append(p)
-    #findHull(left)
-    #findHull(right)
-    x = [a[0] for a in points]
-    y = [b[1] for b in points]
-    plt.scatter(x, y)
+    findHull(left)
+    findHull(right)
 
-testpoints = Points.square()
+testpoints = Points.square(50)
 findHull(testpoints)
 
 print(CHPoints)
+plt.figure()
+x = [a[0] for a in testpoints]
+y = [b[1] for b in testpoints]
+plt.scatter(x, y, vmin=100, vmax=100)
 
-#x = [a[0] for a in testpoints]
-#y = [b[1] for b in testpoints]
-#plt.scatter(x, y)
+plt.figure()
 x1 = [a[0] for a in CHPoints]
 y1 = [b[1] for b in CHPoints]
 plt.scatter(x1,y1)
