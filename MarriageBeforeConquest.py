@@ -38,12 +38,12 @@ def findUpper(points):
         elif not (p[0] < linepoints[-1][0]):
             right.append(p)
     if len(left) < 3:
-        #CHPoints.append(left[0])
+        CHPoints.append(left[0])
         return
     else:
         findUpper(left)
     if len(right) < 3:
-        #CHPoints.append(right[-1])
+        CHPoints.append(right[-1])
         return
     else:
         findUpper(right)
@@ -106,6 +106,8 @@ if __name__ == "__main__":
     plt.scatter(x, y)
 
     plt.figure()
+    plt.xlim([0,100])
+    plt.ylim([0, 100])
     x1 = [a[0] for a in CHPoints]
     y1 = [b[1] for b in CHPoints]
     plt.scatter(x1, y1)
