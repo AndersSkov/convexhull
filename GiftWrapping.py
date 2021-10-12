@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import math
 import Points
 
-points = Points.circle(1000)
-hullPoints = []
 
-def findHull():
+def findHull(points):
+    hullPoints = []
     start = min(points, key=lambda x: x[0])
     startIndex = points.index(start)
     hullPoints.append(start)
@@ -32,22 +31,25 @@ def findHull():
             break
 
         hullPoints.append(points[q])
+    return hullPoints
 
 
 def dist(p1, p2):
     return math.sqrt(((p1[0]-p2[0])**2) + ((p1[1]-p2[1])**2))
 
+
 def orientation(p1,p2,p3):
-    return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
+    return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1])) 
 
 
-findHull()
+#points = Points.circle(1000)
+#hullPoints = findHull(points)
 
 
-x = [a[0] for a in points]
-y = [b[1] for b in points]
-plt.scatter(x, y)
-x1 = [a[0] for a in hullPoints]
-y1 = [b[1] for b in hullPoints]
-plt.plot(x1,y1)
-plt.show()
+#x = [a[0] for a in points]
+#y = [b[1] for b in points]
+#plt.scatter(x, y)
+#x1 = [a[0] for a in hullPoints]
+#y1 = [b[1] for b in hullPoints]
+#plt.plot(x1,y1)
+#plt.show()

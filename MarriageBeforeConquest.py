@@ -9,7 +9,7 @@ CHPoints = []
 
 def findUpper(points):
     # sort the points
-    points.sort(key=lambda x: x[0])
+    
     # find the median and partition
     median = points[math.floor(len(points) / 2)][0]
     # solve lp to find bridge
@@ -94,7 +94,9 @@ def findLower(points):
 
 if __name__ == "__main__":
     testpoints = Points.square(20)
+    testpoints.sort(key=lambda x: x[0])
     findUpper(testpoints)
+    CHPoints.append(testpoints[-1]); CHPoints.append(testpoints[0])
     #findLower(testpoints)
 
     print(CHPoints)
