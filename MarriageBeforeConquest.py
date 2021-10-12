@@ -25,7 +25,7 @@ def findUpper(points):
     for p in points:
         if p[1] == round(pulp.value(a) * p[0] + pulp.value(b)):
             linepoints.append(p)
-    if len(linepoints) == 0:
+    if len(linepoints) < 2:
         return
     # add the points on the line to the set of CH points
     CHPoints.extend(linepoints)
@@ -37,16 +37,14 @@ def findUpper(points):
             left.append(p)
         elif linepoints[-1][0] <= p[0]:
             right.append(p)
-    if len(left) < 3:
-        CHPoints.append(left[0])
-        return
-    else:
-        findUpper(left)
     if len(right) < 3:
-        CHPoints.append(right[-1])
         return
     else:
         findUpper(right)
+    if len(left) < 3:
+        return
+    else:
+        findUpper(left)
 
 def findLower(points):
     # sort the points
