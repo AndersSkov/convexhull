@@ -11,7 +11,7 @@ def findUpper(points):
     # sort the points
     
     # find the median and partition
-    median = points[math.floor(len(points) / 2)][0]
+    median = points[math.floor(len(points) / 2)][0] 
     # solve lp to find bridge
     prob = pulp.LpProblem("bridge_lp", pulp.LpMinimize)
     a = pulp.LpVariable("a")
@@ -89,7 +89,28 @@ def findLower(points):
         findLower(right)
 
 
+def prune(points):
+    pl = points[0]
+    pr = points[-1]
+    for p in points:
+        if p[0] < pl[0]:
+            pl = p
+        elif  p[0] == pl[0] and p[1] > pl[1]:
+            pl = p   
 
+        if p[0] > pl[0]:
+            pr = p
+        elif p[0] == pl[0] and p[1] < pl[1]:
+            pr = p
+
+    slope = (pl[1]-pr[1]) / (pl[0]- pr[0])
+    c = (pr[1] - (slope * pr[0]))
+    
+    for i, p in enumerate(points):
+        if p[1] < slope * p[0]+c:
+            points.pop(i)
+
+    return points
 
 
 if __name__ == "__main__":
