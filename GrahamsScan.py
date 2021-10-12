@@ -3,7 +3,7 @@ import Points
 import matplotlib.pyplot as plt
 from operator import gt, lt, ge, le
 
-points = Points.circle(200)
+points = Points.triangle(200)
 
 def hall(sign):
     hallpoints = []
@@ -11,7 +11,6 @@ def hall(sign):
     hallpoints.append(points[1])
     for i in range(2,len(points)):
         while len(hallpoints) >= 2 and sign(orientation(hallpoints[-2], hallpoints[-1], points[i]), 0):
-            print("popping:", hallpoints[-1])
             hallpoints.pop(-1)
         hallpoints.append(points[i])
     return hallpoints
@@ -54,7 +53,6 @@ CHpoints.extend(upperHall); CHpoints.extend(lowerHall)
 #hall2(h=[2,0])
 #hall2(h=[1,0])
 
-print("points", points)
 print("CHpoints", CHpoints)
 
 

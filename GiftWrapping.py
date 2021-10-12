@@ -2,6 +2,7 @@ import random
 import matplotlib.pyplot as plt
 import math
 import Points
+import timeit
 
 
 def findHull(points):
@@ -39,11 +40,25 @@ def dist(p1, p2):
 
 
 def orientation(p1,p2,p3):
-    return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1])) 
+    return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
 
 
-#points = Points.circle(1000)
-#hullPoints = findHull(points)
+
+
+if __name__ == "__main__":
+    
+    points = Points.square(10000)   
+    
+    start = timeit.default_timer()
+    hullPoints = findHull(points)   
+    stop = timeit.default_timer()
+    print("Time: ", stop-start)
+
+
+
+
+
+
 
 
 #x = [a[0] for a in points]
