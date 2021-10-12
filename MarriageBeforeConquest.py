@@ -33,9 +33,9 @@ def findUpper(points):
     left = []
     right = []
     for p in points:
-        if not (linepoints[0][0] < p[0]):
+        if p[0] <= linepoints[0][0]:
             left.append(p)
-        elif not (p[0] < linepoints[-1][0]):
+        elif linepoints[-1][0] <= p[0]:
             right.append(p)
     if len(left) < 3:
         CHPoints.append(left[0])
@@ -75,9 +75,9 @@ def findLower(points):
     left = []
     right = []
     for p in points:
-        if not (linepoints[0][0] < p[0]):
+        if p[0] <= linepoints[0][0]:
             left.append(p)
-        elif not (p[0] < linepoints[-1][0]):
+        elif linepoints[-1][0] <= p[0]:
             right.append(p)
     if len(left) < 3:
         #CHPoints.append(left[0])
@@ -106,8 +106,8 @@ if __name__ == "__main__":
     plt.scatter(x, y)
 
     plt.figure()
-    plt.xlim([0,100])
-    plt.ylim([0, 100])
+    plt.xlim([-5,105])
+    plt.ylim([-5, 105])
     x1 = [a[0] for a in CHPoints]
     y1 = [b[1] for b in CHPoints]
     plt.scatter(x1, y1)
