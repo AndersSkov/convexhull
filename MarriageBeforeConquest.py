@@ -9,12 +9,10 @@ CHPoints = []
 
 
 def findUpper(points):
+    # sort the points
+    
     # find the median and partition
-<<<<<<< HEAD
-    median = points[math.floor(len(points) / 2)][0] 
-=======
-    median = points[random.randint(0, len(points)-1)][0]
->>>>>>> 757e8329630289fb9883c1f2372ad9bce8f909d3
+    median = points[random.randint(0, len(points)-1)][0] 
     # solve lp to find bridge
     prob = pulp.LpProblem("bridge_lp", pulp.LpMinimize)
     a = pulp.LpVariable("a")
@@ -80,12 +78,12 @@ def findLower(points):
             left.append(p)
         elif linepoints[-1][0] <= p[0]:
             right.append(p)
-    if len(left) < 2:
+    if len(left) < 3:
         #CHPoints.append(left[0])
         return
     else:
         findLower(left)
-    if len(right) < 2:
+    if len(right) < 3:
         CHPoints.append(right[-1])
         return
     else:
@@ -118,13 +116,14 @@ def prune(points):
 
 if __name__ == "__main__":
     testpoints = Points.square(20)
-    findUpper(testpoints)
+    testpoints.sort(key=lambda x: x[0])
+    p = prune(testpoints)
+    findUpper(p)
+    CHPoints.append(p[-1]); CHPoints.append(p[0])
     #findLower(testpoints)
 
     print(CHPoints)
     plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
     x = [a[0] for a in testpoints]
     y = [b[1] for b in testpoints]
     plt.scatter(x, y)
