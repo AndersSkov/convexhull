@@ -42,10 +42,10 @@ def uh_with_size(points, h):
                 if ori >= 0 and ori < best:
                     tangentpoint = hulls[i][j]
         p = tangentpoint
-        for j in range(len(hulls)-1):
-            for k in hulls[j]:
-                if k[0] < p[0]:
-                    hulls[j].remove(k)
+        for j in range(h):
+            for k, m in enumerate(hulls[j]):
+                if m[0] < p[0]:
+                    hulls[j].pop(k)
     return uh, p == p_max
 
 def upper_hull(points):
