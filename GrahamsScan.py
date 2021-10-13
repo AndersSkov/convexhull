@@ -5,7 +5,7 @@ from operator import gt, lt, ge, le
 
 points = Points.triangle(200)
 
-def hall(sign):
+def hall(sign, points):
     hallpoints = []
     hallpoints.append(points[0])
     hallpoints.append(points[1])
