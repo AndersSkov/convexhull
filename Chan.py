@@ -10,10 +10,13 @@ def uh_with_size(points, h):
     uh = []
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
-    l =
     for i in range(h):
         uh.append(p)
-        if
+        if points[i] == p_max:
+            break
+        t = 0
+        for j in range(len(partitions[j])):
+
 
 
 
