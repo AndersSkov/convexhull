@@ -40,26 +40,26 @@ def orientation2(p1, p2, p3):
     else:
         # straight
         return 0
-    
 
-CHpoints = []
-points.sort(key=lambda x:x[0])
-upper = le; lower = ge
-upperHall = hall(upper)
-lowerHall = hall(lower)
-lowerHall.pop(-1); lowerHall.pop(0); lowerHall.reverse()
-CHpoints.extend(upperHall); CHpoints.extend(lowerHall)
+if __name__ == "__main__":
+    CHpoints = []
+    points.sort(key=lambda x:x[0])
+    upper = le; lower = ge
+    upperHall = hall(upper, points)
+    lowerHall = hall(lower, points)
+    lowerHall.pop(-1); lowerHall.pop(0); lowerHall.reverse()
+    CHpoints.extend(upperHall); CHpoints.extend(lowerHall)
 
-#hall2(h=[2,0])
-#hall2(h=[1,0])
+    #hall2(h=[2,0])
+    #hall2(h=[1,0])
 
-print("CHpoints", CHpoints)
+    print("CHpoints", CHpoints)
 
 
-x = [a[0] for a in points]
-y = [b[1] for b in points]
-plt.scatter(x, y)
-x1 = [a[0] for a in CHpoints]
-y1 = [b[1] for b in CHpoints]
-plt.plot(x1,y1)
-plt.show()
+    x = [a[0] for a in points]
+    y = [b[1] for b in points]
+    plt.scatter(x, y)
+    x1 = [a[0] for a in CHpoints]
+    y1 = [b[1] for b in CHpoints]
+    plt.plot(x1,y1)
+    plt.show()

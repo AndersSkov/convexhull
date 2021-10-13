@@ -1,8 +1,13 @@
 import math
 
 import numpy as np
+from matplotlib import pyplot as plt
+
 import GrahamsScan
 from operator import gt, lt, ge, le
+
+import Points
+
 
 def uh_with_size(points, h):
     partitions = np.array_split(points, h)
@@ -56,3 +61,21 @@ def orientation(p1,p2,p3):
 
 
 if __name__ == "__main__":
+    testpoints = Points.square(20)
+
+    hull = upper_hull(testpoints)
+
+    plt.figure()
+    plt.xlim([-5, 105])
+    plt.ylim([-5, 105])
+    x = [a[0] for a in testpoints]
+    y = [b[1] for b in testpoints]
+    plt.scatter(x, y)
+
+    plt.figure()
+    plt.xlim([-5, 105])
+    plt.ylim([-5, 105])
+    x1 = [a[0] for a in hull]
+    y1 = [b[1] for b in hull]
+    plt.scatter(x1, y1)
+    plt.show()
