@@ -44,7 +44,7 @@ def uh_with_size(points, h):
     return uh, p == p_max
 
 def upper_hull(points):
-    for i in range(math.log2(math.log2(len(points)))):
+    for i in range(math.ceil(math.log2(math.log2(len(points))))):
         hull, success = uh_with_size(points, np.exp(2, np.exp(2, i+1)))
         if success:
             return hull
