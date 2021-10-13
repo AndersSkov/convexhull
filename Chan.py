@@ -13,6 +13,10 @@ def uh_with_size(points, h):
     
     least = float('-inf')
     for i in range(h):
+        # if hulls is empty, continue to next iteration 
+        if len(hulls[i]) == 0:
+            continue
+
         uh.append(p)
         if points[i] == p_max:
             break
@@ -31,7 +35,7 @@ def uh_with_size(points, h):
                 if ori >= 0 and ori < best:
                     tangentpoint = hulls[i][j]
         p = tangentpoint
-        
+
 
 
 def orientation(p1,p2,p3):
