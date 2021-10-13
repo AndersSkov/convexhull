@@ -15,8 +15,8 @@ def uh_with_size(points, h):
         if points[i] == p_max:
             break
         t = 0
-        for j in range(len(partitions[j])):
-
+        for j in range(len(partitions[i])):
+            slope = (partitions[i][j][1]-p[1])/(partitions[i][j][0]-p[0])
 
 
 
