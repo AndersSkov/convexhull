@@ -22,47 +22,12 @@ def uh_with_size(points, h):
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
 
-    least = float('-inf')
     for i in range(h):
-        # if hulls is empty, continue to next iteration 
-        if len(hulls[i]) == 0:
-            continue
-
-        uh.append(p)
-        if points[i] == p_max:
-            break
-        best = float('inf')
-        #init tagentpoint to be whatever
-        tangentpoint = p_max
         
-        # first iteration in loop h, where we only calculate slope to see least angle
-        for j in range(len(hulls[i])-1):
-            if i == 0:
-                # check for division by 0
-                if hulls[0][j][0] == p[0] and hulls[0][j][1] > p[1]:
-                    if tangentpoint[0] == hulls[0][j][0] and tangentpoint[1] > hulls[0][j][1]:
-                        # nothing better than angle of 0, therefore least = ∞
-                        least = float('inf')
-                        tangentpoint = hulls[0][j] 
-                    elif not tangentpoint[0] == hulls[0][j][0]:
-                        least = float('inf')
-                        tangentpoint = hulls[0][j] 
+  
 
-                elif not hulls[0][j][0] == p[0]: 
-                    slope = (hulls[0][j][1]-p[1])/(hulls[0][j][0]-p[0])
-                    if slope > least:
-                        least = slope
-                        tangentpoint = hulls[i][j]
-            else:
-                ori = orientation(uh[-2], uh[-1], hulls[i][j])
-                if ori >= 0 and ori < best:
-                    tangentpoint = hulls[i][j]
-        p = tangentpoint
         # remove all points from every Ui with x coordinate less than p's
         for j in range(len(hulls)):
-            print("iteration: ", i)
-            print("hulls", hulls)
-            print("j:", j)
             for k, m in enumerate(hulls[j]):
                 if m[0] < p[0]:
                     hulls[j].pop(k)
