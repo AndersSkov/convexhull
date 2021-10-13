@@ -12,7 +12,7 @@ def uh_with_size(points, h):
     p_max = max(points, key=lambda x: x[0])
     
     t = 0
-    for i in range(1,h):
+    for i in range(h):
         uh.append(p)
         if points[i] == p_max:
             break
