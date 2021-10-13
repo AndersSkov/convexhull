@@ -18,16 +18,16 @@ def uh_with_size(points, h):
             break
         best = float('inf')
         # first iteration in loop h, where we only calculate slope to see least angle
-        for j in range(len(partitions[i])-1):
+        for j in range(len(hulls[i])-1):
             if i == 0:
-                slope = (partitions[0][j][1]-p[1])/(partitions[0][j][0]-p[0])
-                if slope > t:
-                    t = slope
-                    tangentpoint = partitions[i][j]
+                slope = (hulls[0][j][1]-p[1])/(hulls[0][j][0]-p[0])
+                if slope > least:
+                    least = slope
+                    tangentpoint = hulls[i][j]
             else:
-                ori = orientation(uh[-2], uh[-1], partitions[i][j])
+                ori = orientation(uh[-2], uh[-1], hulls[i][j])
                 if ori >= 0 and ori < best:
-                    tangentpoint = partitions[i][j]
+                    tangentpoint = hulls[i][j]
         p = tangentpoint
 
 
