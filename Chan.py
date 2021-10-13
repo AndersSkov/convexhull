@@ -50,7 +50,8 @@ def uh_with_size(points, h):
 
 def upper_hull(points):
     for i in range(math.ceil(math.log2(math.log2(len(points))))):
-        hull, success = uh_with_size(points, np.exp(2, np.exp(2, i+1)))
+        exponent = 2 ** (2 ** (i+1))
+        hull, success = uh_with_size(points, exponent)
         if success:
             return hull
 
