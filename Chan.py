@@ -32,7 +32,7 @@ def uh_with_size(points, h):
         if points[i] == p_max:
             break
         best = float('inf')
-        #init tagentpoint to be whatever
+        #init tagentpoint and slope to be whatever
         tangentpoint = hulls[0][0]
         
         # first iteration in loop h, where we only calculate slope to see least angle
@@ -48,11 +48,11 @@ def uh_with_size(points, h):
                         least = float('inf')
                         tangentpoint = hulls[0][j] 
 
-                elif not hulls[0][j][0] == p[0]:
+                elif not hulls[0][j][0] == p[0]: 
                     slope = (hulls[0][j][1]-p[1])/(hulls[0][j][0]-p[0])
-                if slope > least:
-                    least = slope
-                    tangentpoint = hulls[i][j]
+                    if slope > least:
+                        least = slope
+                        tangentpoint = hulls[i][j]
             else:
                 ori = orientation(uh[-2], uh[-1], hulls[i][j])
                 if ori >= 0 and ori < best:
