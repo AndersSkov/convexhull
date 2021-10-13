@@ -10,20 +10,31 @@ def uh_with_size(points, h):
     uh = []
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
-    for i in range(h):
+    # first iteration in loop h, where we only calculate slope to see least angle
+    t = 0
+    for j in range(len(partition[0])-1):
+        slope = (partitions[0][j][1]-p[1])/(partitions[0][j][0]-p[0])
+        if slope > t:
+            t = slope
+            tangentpoint = partitions[i][j]
+    uh.append(p)
+    p = tangentpoint
+
+
+    for i in range(1,h):
         uh.append(p)
         if points[i] == p_max:
             break
-        t = 0
+        best = float('inf')
         for j in range(len(partitions[i])-1):
-            slope = (partitions[i][j][1]-p[1])/(partitions[i][j][0]-p[0])
-            if slope > t:
-                t = slope
+            ori = orientation(uh[-2], uh[-1], partitions[i][j])
+            if ori >= 0 and ori < best:
                 tangentpoint = partitions[i][j]
         p = tangentpoint
-        l = t
 
 
+def orientation(p1,p2,p3):
+    return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
 
 
 if __name__ == "__main__":
