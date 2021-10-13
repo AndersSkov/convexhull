@@ -20,5 +20,4 @@ def uh_with_size(points, h):
 
 
 
-
 if __name__ == "__main__":
