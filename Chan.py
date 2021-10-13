@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import GrahamsScan
 from operator import gt, lt, ge, le
@@ -39,7 +41,14 @@ def uh_with_size(points, h):
             for k in hulls[j]:
                 if k[0] < p[0]:
                     hulls[j].remove(k)
-    return p == p_max
+    return uh, p == p_max
+
+def upper_hull(points):
+    for i in range(math.log2(math.log2(len(points)))):
+        hull, success = uh_with_size(points, np.exp(2, np.exp(2, i+1)))
+        if success:
+            return hull
+
 
 
 def orientation(p1,p2,p3):
