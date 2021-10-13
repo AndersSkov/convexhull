@@ -23,8 +23,13 @@ def uh_with_size(points, h):
     p_max = max(points, key=lambda x: x[0])
 
     for i in range(h):
-        
-  
+
+        uh.append(p)
+        if p == p_max:
+            break
+
+        for i in range(len(hulls)):
+
 
         # remove all points from every Ui with x coordinate less than p's
         for j in range(len(hulls)):
