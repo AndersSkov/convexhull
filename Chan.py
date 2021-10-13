@@ -23,7 +23,7 @@ def uh_with_size(points, h):
     p_max = max(points, key=lambda x: x[0])
 
     least = float('-inf')
-    for i in range(len(hulls)):
+    for i in range(h):
         # if hulls is empty, continue to next iteration 
         if len(hulls[i]) == 0:
             continue
@@ -33,7 +33,7 @@ def uh_with_size(points, h):
             break
         best = float('inf')
         #init tagentpoint to be whatever
-        tangentpoint = points[0]
+        tangentpoint = p_max
         
         # first iteration in loop h, where we only calculate slope to see least angle
         for j in range(len(hulls[i])-1):
