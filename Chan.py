@@ -39,6 +39,7 @@ def uh_with_size(points, h):
             for k in hulls[j]:
                 if k[0] < p[0]:
                     hulls[j].remove(k)
+    return p == p_max
 
 
 def orientation(p1,p2,p3):
