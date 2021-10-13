@@ -11,7 +11,7 @@ def uh_with_size(points, h):
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
     
-    t = 0
+    least = float('-inf')
     for i in range(h):
         uh.append(p)
         if points[i] == p_max:
