@@ -22,7 +22,7 @@ def uh_with_size(points, h):
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
     # upwards ray
-    ray = list(map(sub, p, (p[0], p[1]+1)))
+    ray = list(map(sub, (p[0], p[1]+1), p))
     print("startray", ray)
 
     for c in range(h):
@@ -40,7 +40,7 @@ def uh_with_size(points, h):
             skip = False
             while True:
                 #sleep(0.5)
-                print("CURRENT:", current, "HULLS: ", hulls[i], "I: ", i, "C: ", c, "P: ", p)
+                #print("CURRENT:", current, "HULLS: ", hulls[i], "I: ", i, "C: ", c, "P: ", p)
                 # skip if empty
                 if len(hulls[i]) == 0 or (len(hulls[i]) == 1 and p == hulls[i][0]):
                     skip = True
@@ -54,17 +54,17 @@ def uh_with_size(points, h):
                     #print("Cross", cross)
                 else:
                     # we were at the last element in hulls[i] so we only need to check if the point before was below.
-                    # we do that in case cross < 0, so we set cross to -1
-                    cross = -1
+                    # we do that in case cross > 0, so we set cross to 1
+                    cross = 1
 
                 # point after is below, or last element
-                if cross < 0:
+                if cross > 0:
                     if not current == 0:
                         # check if point before also is below, if it is we have found the upper tangenr
                         v1_2 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
                         v2_2 = (hulls[i][current][0] - hulls[i][current-1][0], hulls[i][current][1]-hulls[i][current-1][1])
                         cross2 = v1_2[0]*v2_2[1] - v1_2[1]*v2_2[0]
-                        if cross2 < 0:
+                        if cross2 > 0:
                             #print("SUCCESSS")
                             break
                     # point after was below and current is the first point
@@ -79,7 +79,7 @@ def uh_with_size(points, h):
                         current -= math.floor(remain/2)
 
                 # point after is above, therefore we move up in the list
-                if cross > 0:
+                if cross < 0:
                     remain = len(hulls[i][current:])-1
                     if remain == 1:
                         current += 1
@@ -127,9 +127,9 @@ def upper_hull(points):
     for i in range(math.ceil(math.log2(math.log2(len(points))))):
         print('\x1b[6;30;42m' + 'NEW ITERATION!' + '\x1b[0m')
         exponent = 2 ** (2 ** (i+1))
-        hull, success = uh_with_size(points, exponent)
+        hullp, success = uh_with_size(points, exponent)
         if success:
-            return hull
+            return hullp
 
 
 def findBestTangent(ray, p, upperTan): 
@@ -140,7 +140,8 @@ def findBestTangent(ray, p, upperTan):
     print("RAAY", ray, np.linalg.norm(ray))
     # calculate vector from p to uppertan and angle between that vector and vectorRay
     for point in upperTan:
-        vector = list(map(sub, p, point))
+        # vector from p to point
+        vector = list(map(sub, point, p)) 
         print("vector", vector, p, point)
         unitVector2 = (vector / np.linalg.norm(vector)).round(3)
         dotProduct = np.dot(unitVector1, unitVector2).round(3)
@@ -151,7 +152,8 @@ def findBestTangent(ray, p, upperTan):
         if a < angle:
             bestPoint = point
             bestRay = vector
-
+            angle = a
+    print("LOOK", p, bestPoint, upperTan)
     return bestPoint, bestRay
 
 
@@ -174,7 +176,7 @@ if __name__ == "__main__":
     plt.figure()
     plt.xlim([-5, 105])
     plt.ylim([-5, 105])
-    x1 = [a[0] for a in hull]
-    y1 = [b[1] for b in hull]
+    x1 = [a[0] for a in hull] 
+    y1 = [b[1] for b in hull] 
     plt.scatter(x1, y1)
     plt.show()
