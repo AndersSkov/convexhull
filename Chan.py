@@ -17,13 +17,14 @@ def uh_with_size(points, h):
         if len(partition) < 4:
             hulls.append(partition)
         else:
-            hulls.append(GrahamsScan.findHull(ge, le, partition))
+            hulls.append(GrahamsScan.hull(ge, partition))
     uh = []
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
     # upwards ray
-    ray = tuple(map(sub, p, (p[0], p[1]-1)))
-    print("RRRRRRR", ray)
+    ray = list(map(sub, p, (p[0], p[1]-1)))
+    print("startray", ray)
+
     for c in range(h):
         # append min p or best tagentpoint
         uh.append(p)
@@ -39,7 +40,11 @@ def uh_with_size(points, h):
             skip = False
             while True:
                 #sleep(0.5)
-                #print("CURRENT:", current, "HULLS: ", hulls[i], "I: ", i, "C: ", c, "P: ", p)
+                print("CURRENT:", current, "HULLS: ", hulls[i], "I: ", i, "C: ", c, "P: ", p)
+                # skip if empty
+                if len(hulls[i]) == 0 or (len(hulls[i]) == 1 and p == hulls[i][0]):
+                    skip = True
+                    break
                 # check if we are at the last element, so we don't get index out of bounds
                 if not current == len(hulls[i])-1:
                     # calculate cross product to see if the point after the current is above or belove tagent
@@ -64,7 +69,7 @@ def uh_with_size(points, h):
                             break
                     # point after was below and current is the first point
                     elif current == 0:
-                        break
+                        break 
 
                     # point before was not below, since cross2 >= 0 we therefore move back in the list
                     remain = len(hulls[i][:current])
@@ -92,18 +97,21 @@ def uh_with_size(points, h):
                     else:
                         print('\x1b[6;30;42m' + 'ALMOST!' + '\x1b[0m')
                         break
+            if not skip:
+                # add the uppertagent    
+                upperTangents.append(hulls[i][current])
 
-            # add the uppertagent    
-            upperTangents.append(hulls[i][current])
-            #print("UPPER:", upperTangents)
+            
         print("UPPER FINISHED:", upperTangents)
+        if not len(upperTangents)==0:
+            # Find the best upperTagent
+            best, bestRay = findBestTangent(ray, p, upperTangents)
+            p = best
+            print("RAY123", ray, bestRay)
+            ray = bestRay 
+            print("RAAAY321", ray)
+
         
-
-        # Find the best upperTagent
-        best, bestRay = findBestTangent(uh, p, upperTangents)
-        p = best
-        ray = bestRay
-
 
         # remove all points from every Ui with x coordinate less than p's
         for j in range(len(hulls)):
@@ -111,6 +119,7 @@ def uh_with_size(points, h):
                 if m[0] < p[0]:
                     hulls[j].pop(k)
     
+
     return uh, p == p_max
 
 
@@ -127,23 +136,23 @@ def findBestTangent(ray, p, upperTan):
     #init angle to be large
     angle = 361
 
-    unitVector1 = ray / np.linalg.norm(ray)
+    unitVector1 = (ray / np.linalg.norm(ray).round(3)).round(3)
     print("RAAY", ray, np.linalg.norm(ray))
     # calculate vector from p to uppertan and angle between that vector and vectorRay
     for point in upperTan:
-        vector = tuple(map(sub, p, point))
-        
-        unitVector2 = vector / np.linalg.norm(vector)
-        dotProduct = np.dot(unitVector1, unitVector2)
-        a = np.arccos(dotProduct)
+        vector = list(map(sub, p, point))
+        print("vector", vector, p, point)
+        unitVector2 = (vector / np.linalg.norm(vector)).round(3)
+        dotProduct = np.dot(unitVector1, unitVector2).round(3)
+        a = np.arccos(dotProduct).round(3)
 
-        print(a, dotProduct, unitVector1, unitVector2)
+        print("HERE", a, dotProduct, unitVector1, unitVector2)
 
         if a < angle:
-            best = point
+            bestPoint = point
             bestRay = vector
 
-    return best, bestRay
+    return bestPoint, bestRay
 
 
 def orientation(p1,p2,p3):
