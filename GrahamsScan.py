@@ -30,18 +30,6 @@ def orientation(p1,p2,p3):
     return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
 
 
-def orientation2(p1, p2, p3):
-    val = (float(p2[1] - p1[1]) * (p3[0] - p2[0])) - (float(p2[0] - p1[0]) * (p3[1] - p2[1]))
-    if (val > 0):
-        # right turn
-        return 1
-    elif (val < 0):
-        # left turn
-        return 2
-    else:
-        # straight
-        return 0
-
 if __name__ == "__main__":
     points = Points.circle(100)
     upper = ge; lower = le

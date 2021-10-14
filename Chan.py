@@ -22,7 +22,7 @@ def uh_with_size(points, h):
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
     # upwards ray
-    ray = list(map(sub, p, (p[0], p[1]-1)))
+    ray = list(map(sub, p, (p[0], p[1]+1)))
     print("startray", ray)
 
     for c in range(h):
