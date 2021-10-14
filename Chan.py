@@ -4,9 +4,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 import GrahamsScan
-from operator import gt, lt, ge, le
-
+from operator import gt, lt, ge, le, sub
 import Points
+from time import sleep
 
 
 def uh_with_size(points, h):
@@ -17,18 +17,92 @@ def uh_with_size(points, h):
         if len(partition) < 4:
             hulls.append(partition)
         else:
-            hulls.append(GrahamsScan.hall(le, partition))
+            hulls.append(GrahamsScan.findHull(ge, le, partition))
     uh = []
     p = min(points, key=lambda x: x[0])
     p_max = max(points, key=lambda x: x[0])
-
-    for i in range(h):
-
+    # upwards ray
+    ray = tuple(map(sub, p, (p[0], p[1]-1)))
+    print("RRRRRRR", ray)
+    for c in range(h):
+        # append min p or best tagentpoint
         uh.append(p)
+
         if p == p_max:
             break
 
+        upperTangents = []
+        # Find upper tagent from p to Ui using binary search
         for i in range(len(hulls)):
+            # start at half
+            current = math.floor(len(hulls[i]) / 2)
+            skip = False
+            while True:
+                #sleep(0.5)
+                #print("CURRENT:", current, "HULLS: ", hulls[i], "I: ", i, "C: ", c, "P: ", p)
+                # check if we are at the last element, so we don't get index out of bounds
+                if not current == len(hulls[i])-1:
+                    # calculate cross product to see if the point after the current is above or belove tagent
+                    v1 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
+                    v2 = (hulls[i][current][0] - hulls[i][current+1][0], hulls[i][current][1]-hulls[i][current+1][1])
+                    cross = v1[0]*v2[1] - v1[1]*v2[0]
+                    #print("Cross", cross)
+                else:
+                    # we were at the last element in hulls[i] so we only need to check if the point before was below.
+                    # we do that in case cross < 0, so we set cross to -1
+                    cross = -1
+
+                # point after is below, or last element
+                if cross < 0:
+                    if not current == 0:
+                        # check if point before also is below, if it is we have found the upper tangenr
+                        v1_2 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
+                        v2_2 = (hulls[i][current][0] - hulls[i][current-1][0], hulls[i][current][1]-hulls[i][current-1][1])
+                        cross2 = v1_2[0]*v2_2[1] - v1_2[1]*v2_2[0]
+                        if cross2 < 0:
+                            #print("SUCCESSS")
+                            break
+                    # point after was below and current is the first point
+                    elif current == 0:
+                        break
+
+                    # point before was not below, since cross2 >= 0 we therefore move back in the list
+                    remain = len(hulls[i][:current])
+                    if remain == 1:
+                        current -= 1
+                    else:
+                        current -= math.floor(remain/2)
+
+                # point after is above, therefore we move up in the list
+                if cross > 0:
+                    remain = len(hulls[i][current:])-1
+                    if remain == 1:
+                        current += 1
+                    else:
+                        current += math.floor(remain/2)
+
+
+                if cross == 0:
+                    # if cross == 0 the point lies on the tagent. If the point is p we increment current by one since we know that 
+                    # inside this hull the upper tagent from p is the point after.
+                    if p == hulls[i][current]:
+                        current += 1
+                        #print("SAME POINT")
+                        break
+                    else:
+                        print('\x1b[6;30;42m' + 'ALMOST!' + '\x1b[0m')
+                        break
+
+            # add the uppertagent    
+            upperTangents.append(hulls[i][current])
+            #print("UPPER:", upperTangents)
+        print("UPPER FINISHED:", upperTangents)
+        
+
+        # Find the best upperTagent
+        best, bestRay = findBestTangent(uh, p, upperTangents)
+        p = best
+        ray = bestRay
 
 
         # remove all points from every Ui with x coordinate less than p's
@@ -39,14 +113,37 @@ def uh_with_size(points, h):
     
     return uh, p == p_max
 
+
 def upper_hull(points):
     for i in range(math.ceil(math.log2(math.log2(len(points))))):
+        print('\x1b[6;30;42m' + 'NEW ITERATION!' + '\x1b[0m')
         exponent = 2 ** (2 ** (i+1))
-        print("exponent", exponent)
         hull, success = uh_with_size(points, exponent)
         if success:
             return hull
 
+
+def findBestTangent(ray, p, upperTan): 
+    #init angle to be large
+    angle = 361
+
+    unitVector1 = ray / np.linalg.norm(ray)
+    print("RAAY", ray, np.linalg.norm(ray))
+    # calculate vector from p to uppertan and angle between that vector and vectorRay
+    for point in upperTan:
+        vector = tuple(map(sub, p, point))
+        
+        unitVector2 = vector / np.linalg.norm(vector)
+        dotProduct = np.dot(unitVector1, unitVector2)
+        a = np.arccos(dotProduct)
+
+        print(a, dotProduct, unitVector1, unitVector2)
+
+        if a < angle:
+            best = point
+            bestRay = vector
+
+    return best, bestRay
 
 
 def orientation(p1,p2,p3):

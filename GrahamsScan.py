@@ -1,32 +1,33 @@
 import random
 import Points
 import matplotlib.pyplot as plt
-from operator import gt, lt, ge, le
+from operator import ge, le
 
-points = Points.triangle(200)
+def findHull(uppersign, lowersign, points):
+    points.sort(key=lambda x:x[0])
+    CH = []
+    UH = hull(uppersign, points)
+    LH = hull(lowersign, points)
 
-def hall(sign, points):
-    hallpoints = []
-    hallpoints.append(points[0])
-    hallpoints.append(points[1])
+    LH.pop(-1); LH.pop(0); LH.reverse()
+    CH.extend(UH); CH.extend(LH)
+    
+    return CH
+
+def hull(sign, points):
+    hp = []
+    hp.append(points[0]); hp.append(points[1])
+
     for i in range(2,len(points)):
-        while len(hallpoints) >= 2 and sign(orientation(hallpoints[-2], hallpoints[-1], points[i]), 0):
-            hallpoints.pop(-1)
-        hallpoints.append(points[i])
-    return hallpoints
+        while len(hp) >= 2 and sign(orientation(hp[-2], hp[-1], points[i]), 0):
+            hp.pop(-1)
+        hp.append(points[i])
+
+    return hp
+
 
 def orientation(p1,p2,p3):
     return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
-
-
-def hall2(h):
-    CHpoints.append(points[0])
-    CHpoints.append(points[1])
-    for i in range(2,len(points)):
-        while len(CHpoints) >= 2 and orientation2(CHpoints[-2], CHpoints[-1], points[i]) in h:
-            print("popping:", CHpoints[-1])
-            CHpoints.pop(-1)
-        CHpoints.append(points[i])
 
 
 def orientation2(p1, p2, p3):
@@ -42,24 +43,24 @@ def orientation2(p1, p2, p3):
         return 0
 
 if __name__ == "__main__":
-    CHpoints = []
-    points.sort(key=lambda x:x[0])
-    upper = le; lower = ge
-    upperHall = hall(upper, points)
-    lowerHall = hall(lower, points)
-    lowerHall.pop(-1); lowerHall.pop(0); lowerHall.reverse()
-    CHpoints.extend(upperHall); CHpoints.extend(lowerHall)
+    points = Points.circle(100)
+    upper = ge; lower = le
 
-    #hall2(h=[2,0])
-    #hall2(h=[1,0])
+    CHpoints = findHull(upper, lower, points)
 
     print("CHpoints", CHpoints)
 
-
+    plt.figure()
+    plt.xlim([-5, 105])
+    plt.ylim([-5, 105])
     x = [a[0] for a in points]
     y = [b[1] for b in points]
     plt.scatter(x, y)
+
+    plt.figure()
+    plt.xlim([-5, 105])
+    plt.ylim([-5, 105])
     x1 = [a[0] for a in CHpoints]
     y1 = [b[1] for b in CHpoints]
-    plt.plot(x1,y1)
+    plt.scatter(x1, y1)
     plt.show()
