@@ -11,6 +11,7 @@ from time import sleep
 
 def uh_with_size(points, h):
     partitions = [points[x:x+h] for x in range(0, len(points), h)]
+    print("partitions", partitions)
     hulls = []
     for i, partition in enumerate(partitions):
         # list with 3 points or less will always have all points in the convex hull
@@ -23,8 +24,7 @@ def uh_with_size(points, h):
     p_max = max(points, key=lambda x: x[0])
     # upwards ray
     ray = list(map(sub, (p[0], p[1]+1), p))
-    print("startray", ray)
-
+    print("HULLS", hulls)
     for c in range(h):
         # append min p or best tagentpoint
         uh.append(p)
@@ -39,8 +39,6 @@ def uh_with_size(points, h):
             current = math.floor(len(hulls[i]) / 2)
             skip = False
             while True:
-                #sleep(0.5)
-                #print("CURRENT:", current, "HULLS: ", hulls[i], "I: ", i, "C: ", c, "P: ", p)
                 # skip if empty
                 if len(hulls[i]) == 0 or (len(hulls[i]) == 1 and p == hulls[i][0]):
                     skip = True
@@ -51,7 +49,7 @@ def uh_with_size(points, h):
                     v1 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
                     v2 = (hulls[i][current][0] - hulls[i][current+1][0], hulls[i][current][1]-hulls[i][current+1][1])
                     cross = v1[0]*v2[1] - v1[1]*v2[0]
-                    #print("Cross", cross)
+
                 else:
                     # we were at the last element in hulls[i] so we only need to check if the point before was below.
                     # we do that in case cross > 0, so we set cross to 1
@@ -101,16 +99,14 @@ def uh_with_size(points, h):
                 # add the uppertagent    
                 upperTangents.append(hulls[i][current])
 
-            
-        print("UPPER FINISHED:", upperTangents)
         if not len(upperTangents)==0:
             # Find the best upperTagent
             best, bestRay = findBestTangent(ray, p, upperTangents)
             p = best
-            print("RAY123", ray, bestRay)
             ray = bestRay 
-            print("RAAAY321", ray)
-
+            if c+1 == h:
+                print("APPENDED", p)
+                uh.append(p)
         
 
         # remove all points from every Ui with x coordinate less than p's
@@ -136,13 +132,12 @@ def findBestTangent(ray, p, upperTan):
     #init angle to be large
     angle = 361
 
+
     unitVector1 = (ray / np.linalg.norm(ray).round(3)).round(3)
-    print("RAAY", ray, np.linalg.norm(ray))
     # calculate vector from p to uppertan and angle between that vector and vectorRay
     for point in upperTan:
         # vector from p to point
         vector = list(map(sub, point, p)) 
-        print("vector", vector, p, point)
         unitVector2 = (vector / np.linalg.norm(vector)).round(3)
         dotProduct = np.dot(unitVector1, unitVector2).round(3)
         a = np.arccos(dotProduct).round(3)
@@ -153,7 +148,7 @@ def findBestTangent(ray, p, upperTan):
             bestPoint = point
             bestRay = vector
             angle = a
-    print("LOOK", p, bestPoint, upperTan)
+    print("LOOK", p, bestPoint, angle, upperTan)
     return bestPoint, bestRay
 
 

@@ -15,6 +15,7 @@ def findHull(uppersign, lowersign, points):
     return CH
 
 def hull(sign, points):
+    points.sort(key=lambda x:x[0])
     hp = []
     hp.append(points[0]); hp.append(points[1])
 
