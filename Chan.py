@@ -93,7 +93,6 @@ def uh_with_size(points, h):
                         #print("SAME POINT")
                         break
                     else:
-                        print('\x1b[6;30;42m' + 'ALMOST!' + '\x1b[0m')
                         break
             if not skip:
                 # add the uppertagent    
@@ -105,7 +104,6 @@ def uh_with_size(points, h):
             p = best
             ray = bestRay 
             if c+1 == h:
-                print("APPENDED", p)
                 uh.append(p)
         
 
@@ -121,7 +119,6 @@ def uh_with_size(points, h):
 
 def upper_hull(points):
     for i in range(math.ceil(math.log2(math.log2(len(points))))):
-        print('\x1b[6;30;42m' + 'NEW ITERATION!' + '\x1b[0m')
         exponent = 2 ** (2 ** (i+1))
         hullp, success = uh_with_size(points, exponent)
         if success:
@@ -142,13 +139,10 @@ def findBestTangent(ray, p, upperTan):
         dotProduct = np.dot(unitVector1, unitVector2).round(3)
         a = np.arccos(dotProduct).round(3)
 
-        print("HERE", a, dotProduct, unitVector1, unitVector2)
-
         if a < angle:
             bestPoint = point
             bestRay = vector
             angle = a
-    print("LOOK", p, bestPoint, angle, upperTan)
     return bestPoint, bestRay
 
 
