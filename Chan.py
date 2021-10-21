@@ -11,7 +11,6 @@ from time import sleep
 
 def uh_with_size(points, h):
     partitions = [points[x:x+h] for x in range(0, len(points), h)]
-    print("partitions", partitions)
     hulls = []
     for i, partition in enumerate(partitions):
         # list with 3 points or less will always have all points in the convex hull
@@ -24,7 +23,6 @@ def uh_with_size(points, h):
     p_max = max(points, key=lambda x: x[0])
     # upwards ray
     ray = list(map(sub, (p[0], p[1]+1), p))
-    print("HULLS", hulls)
     for c in range(h):
         # append min p or best tagentpoint
         uh.append(p)
