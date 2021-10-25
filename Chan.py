@@ -136,7 +136,15 @@ def findBestTangent(ray, p, upperTan):
         vector = list(map(sub, point, p)) 
         unitVector2 = (vector / np.linalg.norm(vector)).round(3)
         dotProduct = np.dot(unitVector1, unitVector2).round(3)
-        a = np.arccos(dotProduct).round(3)
+        print("PRIK", dotProduct)
+        try:
+            a = np.arccos(dotProduct).round(3)
+        except:
+            if dotProduct > 0:
+                 a = np.arccos(1).round(3)
+            else:
+                a = np.arccos(-1).round(3)
+
 
         if a < angle:
             bestPoint = point
@@ -150,7 +158,7 @@ def orientation(p1,p2,p3):
 
 
 if __name__ == "__main__":
-    testpoints = Points.square(10000)
+    testpoints = Points.square(100)
 
     start = timeit.default_timer()
     hull = upper_hull(testpoints)
