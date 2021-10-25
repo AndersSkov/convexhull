@@ -47,12 +47,13 @@ def orientation(p1,p2,p3):
 
 if __name__ == "__main__":
     
-    points = Points.square(10000)   
+    points = Points.square(1000000)   
     
     start = timeit.default_timer()
     hullPoints = findHull(points)   
     stop = timeit.default_timer()
     print("Time: ", stop-start)
+    print("length: ", len(hullPoints))
 
 
 

@@ -7,6 +7,7 @@ import GrahamsScan
 from operator import gt, lt, ge, le, sub
 import Points
 from time import sleep
+import timeit
 
 
 def uh_with_size(points, h):
@@ -128,7 +129,7 @@ def findBestTangent(ray, p, upperTan):
     angle = 361
 
 
-    unitVector1 = (ray / np.linalg.norm(ray).round(3)).round(3)
+    unitVector1 = (ray / np.linalg.norm(ray)).round(3)
     # calculate vector from p to uppertan and angle between that vector and vectorRay
     for point in upperTan:
         # vector from p to point
@@ -149,21 +150,28 @@ def orientation(p1,p2,p3):
 
 
 if __name__ == "__main__":
-    testpoints = Points.square(20)
+    testpoints = Points.square(10000)
 
+    start = timeit.default_timer()
     hull = upper_hull(testpoints)
+    stop = timeit.default_timer()
 
-    plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
-    x = [a[0] for a in testpoints]
-    y = [b[1] for b in testpoints]
-    plt.scatter(x, y)
+    print("Time: ", stop-start)
+    print("length: ", len(hull))
 
-    plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
-    x1 = [a[0] for a in hull] 
-    y1 = [b[1] for b in hull] 
-    plt.scatter(x1, y1)
-    plt.show()
+
+
+    #plt.figure()
+    #plt.xlim([-5, 105])
+    #plt.ylim([-5, 105])
+    #x = [a[0] for a in testpoints]
+    #y = [b[1] for b in testpoints]
+    #plt.scatter(x, y)
+
+    #plt.figure()
+    #plt.xlim([-5, 105])
+    #plt.ylim([-5, 105])
+    ##x1 = [a[0] for a in hull] 
+    #y1 = [b[1] for b in hull] 
+    #plt.scatter(x1, y1)
+    #plt.show()

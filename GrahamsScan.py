@@ -2,6 +2,7 @@ import random
 import Points
 import matplotlib.pyplot as plt
 from operator import ge, le
+import timeit
 
 def findHull(uppersign, lowersign, points):
     points.sort(key=lambda x:x[0])
@@ -15,7 +16,6 @@ def findHull(uppersign, lowersign, points):
     return CH
 
 def hull(sign, points):
-    points.sort(key=lambda x:x[0])
     hp = []
     hp.append(points[0]); hp.append(points[1])
 
@@ -32,24 +32,29 @@ def orientation(p1,p2,p3):
 
 
 if __name__ == "__main__":
-    points = Points.circle(100)
+    points = Points.onCurve(1000000)
     upper = ge; lower = le
-
+    
+    start = timeit.default_timer()
     CHpoints = findHull(upper, lower, points)
+    stop = timeit.default_timer()
 
-    print("CHpoints", CHpoints)
+    print("Time: ", stop-start)
+    print("length: ", len(CHpoints))
 
-    plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
-    x = [a[0] for a in points]
-    y = [b[1] for b in points]
-    plt.scatter(x, y)
+    #print("CHpoints", CHpoints)
 
-    plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
-    x1 = [a[0] for a in CHpoints]
-    y1 = [b[1] for b in CHpoints]
-    plt.scatter(x1, y1)
-    plt.show()
+    #plt.figure()
+    #plt.xlim([-5, 105])
+    #plt.ylim([-5, 105])
+    #x = [a[0] for a in points]
+    #y = [b[1] for b in points]
+    #plt.scatter(x, y)
+
+    #plt.figure()
+    #plt.xlim([-5, 105])
+    #plt.ylim([-5, 105])
+    #x1 = [a[0] for a in CHpoints]
+    #y1 = [b[1] for b in CHpoints]
+    #plt.scatter(x1, y1)
+    #plt.show()

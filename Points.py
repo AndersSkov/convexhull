@@ -15,12 +15,12 @@ def circle(numOfPoints):
     return p
 
 def square(numOfPoints):
-    return [(random.randint(0,100),random.randint(0,100)) for i in range(numOfPoints)]
+    return [(random.randint(0,numOfPoints),random.randint(0,numOfPoints)) for i in range(numOfPoints)]
 
 def onCurve(numOfPoints):
     p = []
     for i in range(numOfPoints):
-        val = random.randint(0,100)
+        val = random.randint(0,numOfPoints)
         p.append((val**2,val))
     return p
 
