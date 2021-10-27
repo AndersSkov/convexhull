@@ -37,8 +37,10 @@ def uh_with_size(points, h):
             # start at half
             current = math.floor(len(hulls[i]) / 2)
             skip = False
+            last = current
             while True:
                 # skip if empty
+                
                 if len(hulls[i]) == 0 or (len(hulls[i]) == 1 and p == hulls[i][0]):
                     skip = True
                     break
@@ -48,7 +50,7 @@ def uh_with_size(points, h):
                     v1 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
                     v2 = (hulls[i][current][0] - hulls[i][current+1][0], hulls[i][current][1]-hulls[i][current+1][1])
                     cross = v1[0]*v2[1] - v1[1]*v2[0]
-
+                    print("here", hulls[i], current, cross)
                 else:
                     # we were at the last element in hulls[i] so we only need to check if the point before was below.
                     # we do that in case cross > 0, so we set cross to 1
@@ -69,20 +71,21 @@ def uh_with_size(points, h):
                         break 
 
                     # point before was not below, since cross2 >= 0 we therefore move back in the list
-                    remain = len(hulls[i][:current])
-                    if remain == 1:
+                    remain = len(hulls[i][last:current])
+                    if remain == 1 or remain == 0:
                         current -= 1
                     else:
                         current -= math.floor(remain/2)
+                    last = current
 
                 # point after is above, therefore we move up in the list
                 if cross < 0:
-                    remain = len(hulls[i][current:])-1
-                    if remain == 1:
+                    remain = len(hulls[i][current:last])-1
+                    if remain == 1 or remain == 0:
                         current += 1
                     else:
                         current += math.floor(remain/2)
-
+                    last = current
 
                 if cross == 0:
                     # if cross == 0 the point lies on the tagent. If the point is p we increment current by one since we know that 
@@ -136,7 +139,6 @@ def findBestTangent(ray, p, upperTan):
         vector = list(map(sub, point, p)) 
         unitVector2 = (vector / np.linalg.norm(vector)).round(3)
         dotProduct = np.dot(unitVector1, unitVector2).round(3)
-        print("PRIK", dotProduct)
         try:
             a = np.arccos(dotProduct).round(3)
         except:
@@ -169,17 +171,17 @@ if __name__ == "__main__":
 
 
 
-    #plt.figure()
-    #plt.xlim([-5, 105])
-    #plt.ylim([-5, 105])
-    #x = [a[0] for a in testpoints]
-    #y = [b[1] for b in testpoints]
-    #plt.scatter(x, y)
+    plt.figure()
+    plt.xlim([-5, 105])
+    plt.ylim([-5, 105])
+    x = [a[0] for a in testpoints]
+    y = [b[1] for b in testpoints]
+    plt.scatter(x, y)
 
-    #plt.figure()
-    #plt.xlim([-5, 105])
-    #plt.ylim([-5, 105])
-    ##x1 = [a[0] for a in hull] 
-    #y1 = [b[1] for b in hull] 
-    #plt.scatter(x1, y1)
-    #plt.show()
+    plt.figure()
+    plt.xlim([-5, 105])
+    plt.ylim([-5, 105])
+    x1 = [a[0] for a in hull] 
+    y1 = [b[1] for b in hull] 
+    plt.scatter(x1, y1)
+    plt.show()
