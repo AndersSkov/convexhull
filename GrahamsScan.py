@@ -16,6 +16,8 @@ def findHull(uppersign, lowersign, points):
     return CH
 
 def hull(sign, points):
+    # Remove the sorting from the line below when running graham scan, and keep in when running Chan's
+    points.sort(key=lambda x:x[0])
     hp = []
     hp.append(points[0]); hp.append(points[1])
 

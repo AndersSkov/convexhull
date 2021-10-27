@@ -24,6 +24,7 @@ def uh_with_size(points, h):
     p_max = max(points, key=lambda x: x[0])
     # upwards ray
     ray = list(map(sub, (p[0], p[1]+1), p))
+    print("HULLS:", hulls)
     for c in range(h):
         # append min p or best tagentpoint
         uh.append(p)
@@ -38,9 +39,9 @@ def uh_with_size(points, h):
             current = math.floor(len(hulls[i]) / 2)
             skip = False
             last = current
+            gap = 0
             while True:
                 # skip if empty
-                
                 if len(hulls[i]) == 0 or (len(hulls[i]) == 1 and p == hulls[i][0]):
                     skip = True
                     break
@@ -50,7 +51,7 @@ def uh_with_size(points, h):
                     v1 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
                     v2 = (hulls[i][current][0] - hulls[i][current+1][0], hulls[i][current][1]-hulls[i][current+1][1])
                     cross = v1[0]*v2[1] - v1[1]*v2[0]
-                    print("here", hulls[i], current, cross)
+                    print("here", hulls[i], current, cross, p)
                 else:
                     # we were at the last element in hulls[i] so we only need to check if the point before was below.
                     # we do that in case cross > 0, so we set cross to 1
@@ -64,27 +65,19 @@ def uh_with_size(points, h):
                         v2_2 = (hulls[i][current][0] - hulls[i][current-1][0], hulls[i][current][1]-hulls[i][current-1][1])
                         cross2 = v1_2[0]*v2_2[1] - v1_2[1]*v2_2[0]
                         if cross2 > 0:
-                            #print("SUCCESSS")
+                            print("SUCCESSS")
                             break
                     # point after was below and current is the first point
                     elif current == 0:
                         break 
 
                     # point before was not below, since cross2 >= 0 we therefore move back in the list
-                    remain = len(hulls[i][last:current])
-                    if remain == 1 or remain == 0:
-                        current -= 1
-                    else:
-                        current -= math.floor(remain/2)
+                    current -= findJump(current,last,hulls[i],-1)
                     last = current
 
                 # point after is above, therefore we move up in the list
                 if cross < 0:
-                    remain = len(hulls[i][current:last])-1
-                    if remain == 1 or remain == 0:
-                        current += 1
-                    else:
-                        current += math.floor(remain/2)
+                    current += findJump(current,last,hulls[i],1)
                     last = current
 
                 if cross == 0:
@@ -92,14 +85,14 @@ def uh_with_size(points, h):
                     # inside this hull the upper tagent from p is the point after.
                     if p == hulls[i][current]:
                         current += 1
-                        #print("SAME POINT")
+                        print("SAME POINT")
                         break
                     else:
                         break
             if not skip:
                 # add the uppertagent    
                 upperTangents.append(hulls[i][current])
-
+        print("UPPERTAN;", upperTangents)
         if not len(upperTangents)==0:
             # Find the best upperTagent
             best, bestRay = findBestTangent(ray, p, upperTangents)
@@ -131,7 +124,6 @@ def findBestTangent(ray, p, upperTan):
     #init angle to be large
     angle = 361
 
-
     unitVector1 = (ray / np.linalg.norm(ray)).round(3)
     # calculate vector from p to uppertan and angle between that vector and vectorRay
     for point in upperTan:
@@ -147,7 +139,6 @@ def findBestTangent(ray, p, upperTan):
             else:
                 a = np.arccos(-1).round(3)
 
-
         if a < angle:
             bestPoint = point
             bestRay = vector
@@ -155,12 +146,30 @@ def findBestTangent(ray, p, upperTan):
     return bestPoint, bestRay
 
 
-def orientation(p1,p2,p3):
-    return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
+def findJump(current, last, hull, direction):
+    if direction == -1:
+        remain = len(hull[:current])
+        pre_remain = len(hull[:last])
+        gap = np.abs(remain-pre_remain)
+        if gap == 1 or gap == 0:
+            jump = 1
+        else:
+            jump = math.floor(remain/2)
+
+    else:
+        remain = len(hull[current:])-1
+        pre_remain = len(hull[last:])
+        gap = np.abs(remain-pre_remain)
+        if gap == 1 or gap == 0:
+            jump = 1
+        else:
+            jump = math.floor(remain/2)
+
+    return jump
 
 
 if __name__ == "__main__":
-    testpoints = Points.square(100)
+    testpoints = Points.square(15)
 
     start = timeit.default_timer()
     hull = upper_hull(testpoints)
@@ -172,15 +181,15 @@ if __name__ == "__main__":
 
 
     plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
+    plt.xlim([-1, 16])
+    plt.ylim([-1, 16])
     x = [a[0] for a in testpoints]
     y = [b[1] for b in testpoints]
     plt.scatter(x, y)
 
     plt.figure()
-    plt.xlim([-5, 105])
-    plt.ylim([-5, 105])
+    plt.xlim([-1, 16])
+    plt.ylim([-1, 16])
     x1 = [a[0] for a in hull] 
     y1 = [b[1] for b in hull] 
     plt.scatter(x1, y1)
