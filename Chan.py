@@ -102,7 +102,7 @@ def uh_with_size(points, h):
 
         if not len(upperTangents)==0:
             # Find the best upperTagent
-            best = findBestTangent(ray, p, upperTangents)
+            best = findBestTangent(p, upperTangents)
             p = best
             print(p)
             if c+1 == h:
@@ -127,22 +127,22 @@ def upper_hull(points):
             return hullp
 
 
-def findBestTangent(ray, p, upperTan): 
+def findBestTangent(p, upperTan): 
     q = 0
     for i in range(len(upperTan)):
-        if i == q:
-                continue
+        if p == upperTan[i]:
+            continue
         # check if there is another left turn from the current index
-        print(len(upperTan), i, q)
         ori = orientation(p, upperTan[i], upperTan[q])
         if ori > 0 or (ori == 0 and dist(upperTan[i], p) > dist(upperTan[q], p)):
             q = i 
-
+            
     return upperTan[q]
 
 
 def orientation(p1,p2,p3):
     return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
+
 
 def dist(p1, p2):
     return math.sqrt(((p1[0]-p2[0])**2) + ((p1[1]-p2[1])**2))
