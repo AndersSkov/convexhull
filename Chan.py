@@ -37,6 +37,8 @@ def uh_with_size(points, h):
             # start at half
             current = math.floor(len(hulls[i]) / 2)
             skip = False
+            last = current
+
             while True:
                 # skip if empty
                 if len(hulls[i]) == 0 or (len(hulls[i]) == 1 and p == hulls[i][0]):
@@ -48,7 +50,6 @@ def uh_with_size(points, h):
                     v1 = (hulls[i][current][0] - p[0], hulls[i][current][1] - p[1]) 
                     v2 = (hulls[i][current][0] - hulls[i][current+1][0], hulls[i][current][1]-hulls[i][current+1][1])
                     cross = v1[0]*v2[1] - v1[1]*v2[0]
-
                 else:
                     # we were at the last element in hulls[i] so we only need to check if the point before was below.
                     # we do that in case cross > 0, so we set cross to 1
@@ -69,19 +70,21 @@ def uh_with_size(points, h):
                         break 
 
                     # point before was not below, since cross2 >= 0 we therefore move back in the list
-                    remain = len(hulls[i][:current])
-                    if remain == 1:
+                    remain = len(hulls[i][last:current])
+                    if remain == 1 or remain == 0:
                         current -= 1
                     else:
                         current -= math.floor(remain/2)
+                    last = current
 
                 # point after is above, therefore we move up in the list
                 if cross < 0:
-                    remain = len(hulls[i][current:])-1
-                    if remain == 1:
+                    remain = len(hulls[i][current:last])-1
+                    if remain == 1 or remain == 0:
                         current += 1
                     else:
                         current += math.floor(remain/2)
+                    last = current
 
 
                 if cross == 0:
@@ -99,9 +102,9 @@ def uh_with_size(points, h):
 
         if not len(upperTangents)==0:
             # Find the best upperTagent
-            best, bestRay = findBestTangent(ray, p, upperTangents)
+            best = findBestTangent(ray, p, upperTangents)
             p = best
-            ray = bestRay 
+            print(p)
             if c+1 == h:
                 uh.append(p)
         
@@ -125,36 +128,24 @@ def upper_hull(points):
 
 
 def findBestTangent(ray, p, upperTan): 
-    #init angle to be large
-    angle = 361
+    q = 0
+    for i in range(len(upperTan)):
+        if i == q:
+                continue
+        # check if there is another left turn from the current index
+        print(len(upperTan), i, q)
+        ori = orientation(p, upperTan[i], upperTan[q])
+        if ori > 0 or (ori == 0 and dist(upperTan[i], p) > dist(upperTan[q], p)):
+            q = i 
 
-
-    unitVector1 = (ray / np.linalg.norm(ray)).round(3)
-    # calculate vector from p to uppertan and angle between that vector and vectorRay
-    for point in upperTan:
-        # vector from p to point
-        vector = list(map(sub, point, p)) 
-        unitVector2 = (vector / np.linalg.norm(vector)).round(3)
-        dotProduct = np.dot(unitVector1, unitVector2).round(3)
-        print("PRIK", dotProduct)
-        try:
-            a = np.arccos(dotProduct).round(3)
-        except:
-            if dotProduct > 0:
-                 a = np.arccos(1).round(3)
-            else:
-                a = np.arccos(-1).round(3)
-
-
-        if a < angle:
-            bestPoint = point
-            bestRay = vector
-            angle = a
-    return bestPoint, bestRay
+    return upperTan[q]
 
 
 def orientation(p1,p2,p3):
     return (p1[0] * (p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]))
+
+def dist(p1, p2):
+    return math.sqrt(((p1[0]-p2[0])**2) + ((p1[1]-p2[1])**2))
 
 
 if __name__ == "__main__":
@@ -169,17 +160,13 @@ if __name__ == "__main__":
 
 
 
-    #plt.figure()
-    #plt.xlim([-5, 105])
-    #plt.ylim([-5, 105])
-    #x = [a[0] for a in testpoints]
-    #y = [b[1] for b in testpoints]
-    #plt.scatter(x, y)
+    plt.figure()
+    x = [a[0] for a in testpoints]
+    y = [b[1] for b in testpoints]
+    plt.scatter(x, y)
 
-    #plt.figure()
-    #plt.xlim([-5, 105])
-    #plt.ylim([-5, 105])
-    ##x1 = [a[0] for a in hull] 
-    #y1 = [b[1] for b in hull] 
-    #plt.scatter(x1, y1)
-    #plt.show()
+    plt.figure()
+    x1 = [a[0] for a in hull] 
+    y1 = [b[1] for b in hull] 
+    plt.scatter(x1, y1)
+    plt.show()
